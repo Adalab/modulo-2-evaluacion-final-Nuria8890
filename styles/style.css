@@ -8,10 +8,13 @@ main {
   margin-top: 20px;
 }
 
-section {
+ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   background-color: lightcoral;
   border: 2px solid black;
-  height: 500px;
+  width: 100wh;
 }
 .favorites {
   width: 30%;
@@ -21,4 +24,8 @@ section {
 .results {
   width: 70%;
   background-color: lightblue;
+}
+
+p {
+  width: 220px;
 }
