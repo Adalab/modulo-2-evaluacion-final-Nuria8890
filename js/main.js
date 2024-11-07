@@ -13,7 +13,7 @@ const renderSeries = (series) => {
         <li class="js-serie" id=${serie.idSerie}>
             <img
               src=${serie.urlImage}
-              alt=""
+              alt="${serie.titleSerie}"
             />
             <p>${serie.titleSerie}</p>
           </li>
@@ -28,7 +28,7 @@ const renderSeriesFavorites = (series) => {
         <li class="js-serie" id=${serie.idSerie}>
             <img
               src=${serie.urlImage}
-              alt=""
+              alt="${serie.titleSerie}"
             />
             <p>${serie.titleSerie}</p>
           </li>
