@@ -18,7 +18,7 @@ const paintinCard = (series) => {
   for (const serie of series) {
     results.innerHTML += `
     <li class="js-serie" id=${serie.id}>
-        <img
+        <img class="img__results"
           src=${serie.urlImage}
           alt="${serie.title}"
         />
@@ -42,7 +42,7 @@ const paintinCardFavorites = (series) => {
   for (const serie of series) {
     favorites.innerHTML += `
     <li class="js-serie" id=${serie.id}>
-        <img
+        <img class="img__favorites"
           src=${serie.urlImage}
           alt="${serie.title}"
         />

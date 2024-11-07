@@ -8,18 +8,13 @@ main {
   margin-top: 20px;
 }
 
-ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  background-color: lightcoral;
-  border: 2px solid black;
-  width: 100wh;
-}
-.favorites {
+.ul__favorites {
   display: flex;
   flex-direction: column;
+  gap: 10px;
   width: 30%;
+  min-width: 220px;
+  padding: 10px;
   background-color: lightcoral;
 }
 
@@ -28,12 +23,19 @@ ul {
   height: 300px;
 }
 
-img {
-  width: 80%;
+.img__results {
+  width: 225px;
 }
-
-.results {
+.img__favorites {
+  width: 158px;
+}
+.ul__results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   width: 70%;
+  min-width: 480px;
+  padding: 10px;
   background-color: lightblue;
 }
 
