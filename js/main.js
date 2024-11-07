@@ -1,39 +1,78 @@
-"use strict";
-
-const button = document.querySelector(".js-button");
+const search = document.querySelector(".js-button");
 const input = document.querySelector(".js-input");
+let seriesToPaint = [];
 const results = document.querySelector(".js-results");
-const favorites = document.querySelector(".js-favorites");
-let seriesData = [];
 let favoritesSeries = [];
+const favorites = document.querySelector(".js-favorites");
 
-const renderSeries = (series) => {
+// Ejercicio 1: Búsqueda
+/* Cuando hago click en el botón buscar
+    - Recoger el valor del input
+      - Hacer la solicitud al servidor con ese valor
+        - Por cada serie recogida, pintar una tarjeta con la imagen y el título
+          - Si no hay imagen, poner: "https://via.placeholder.com/100x100/f08080/add8e6/?text=NoImage"
+*/
+
+const paintinCard = (series) => {
+  console.log("paintinCard series es", series);
   for (const serie of series) {
     results.innerHTML += `
-        <li class="js-serie" id=${serie.idSerie}>
-            <img
-              src=${serie.urlImage}
-              alt="${serie.titleSerie}"
-            />
-            <p>${serie.titleSerie}</p>
-          </li>
-        `;
+    <li class="js-serie" id=${serie.id}>
+        <img
+          src=${serie.urlImage}
+          alt="${serie.title}"
+        />
+        <p>${serie.title}</p>
+      </li>
+    `;
   }
 };
 
-const renderSeriesFavorites = (series) => {
+// Ejercicio 2: favoritos
+
+/*Cuando ya he pintado las series
+  - Al hacer click en cada serie
+    - añadir una clase que marque la serie
+    - crear una variable de series favoritas
+      - pintar esa variable en el listado de favoritos
+*/
+const paintinCardFavorites = (series) => {
+  console.log("paintinCard series es", series);
   favorites.innerHTML = "";
   for (const serie of series) {
     favorites.innerHTML += `
-        <li class="js-serie" id=${serie.idSerie}>
-            <img
-              src=${serie.urlImage}
-              alt="${serie.titleSerie}"
-            />
-            <p>${serie.titleSerie}</p>
-          </li>
-        `;
+    <li class="js-serie" id=${serie.id}>
+        <img
+          src=${serie.urlImage}
+          alt="${serie.title}"
+        />
+        <p>${serie.title}</p>
+      </li>
+    `;
   }
+};
+
+// Ejercicio 3: almacenamiento local
+const saveLocalStorage = (series) => {
+  console.log("para el localStorage, series es", series);
+  localStorage.setItem("favoriteSeries", JSON.stringify(series));
+};
+
+const handleFavorites = (event) => {
+  const serieClicked = event.currentTarget;
+  const idSerieClicked = parseInt(event.currentTarget.id);
+
+  serieClicked.classList.toggle("favorite__serie");
+
+  const serieToAddFavorite = seriesToPaint.find((serie) => {
+    return serie.id === idSerieClicked;
+  });
+
+  favoritesSeries.push(serieToAddFavorite);
+  console.log("favoritesSeries es", favoritesSeries);
+
+  paintinCardFavorites(favoritesSeries);
+  saveLocalStorage(favoritesSeries);
 };
 
 const addFavoritesSeries = () => {
@@ -43,78 +82,50 @@ const addFavoritesSeries = () => {
   }
 };
 
-const saveLocalStorage = (series) => {
-  console.log("para el localStorage, series es", series);
-  localStorage.setItem("favoriteSeries", JSON.stringify(series));
-};
-
-const handleFavorites = (event) => {
-  // console.log("event.currentTarget", event.currentTarget);
-  const serieClicked = event.currentTarget;
-  const idSerieClicked = parseInt(event.currentTarget.id);
-  // console.log("typeof idSerieClicked", typeof idSerieClicked);
-  // console.log("idSerieClicked", idSerieClicked);
-  serieClicked.classList.toggle("favorite__serie");
-
-  const serieToAddFavorite = seriesData.find((serie) => {
-    // console.log("idSerie es", serie.idSerie);
-    return serie.idSerie === idSerieClicked;
-  });
-  favoritesSeries.push(serieToAddFavorite);
-  console.log("favoritesSeries es", favoritesSeries);
-
-  renderSeriesFavorites(favoritesSeries);
-  saveLocalStorage(favoritesSeries);
-};
-
+// Ejercicio 1: Búsqueda
 const handleSearch = () => {
   const inputValue = input.value;
 
   fetch(`https://api.jikan.moe/v4/anime?q=${inputValue}`)
     .then((response) => response.json())
     .then((data) => {
-      // console.log("data es", data);
-      const series = data.data;
-      // console.log("series es", series);
-
-      for (const serie of series) {
-        /*Cuántas páginas hay
-        const totalPages = data.pagination.items.total;
-        const seriePerPage = data.pagination.items.per_page;
-        const pages = Math.ceil(totalPages / seriePerPage);
-        console.log("Hay", pages, "páginas");
-        */
-
+      const serverSeries = data.data;
+      for (const serie of serverSeries) {
         // Si no hay imagen en el listado, pinta la imagen de TV, sino, pinta la imagen que viene en el listado
         const urlImage =
           serie.images.jpg.image_url ===
           "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png"
-            ? "https://via.placeholder.com/210x295/ffffff/666666/?text=TV"
+            ? "https://via.placeholder.com/100x100/f08080/add8e6/?text=NoImage"
             : serie.images.jpg.image_url;
 
-        const titleSerie = serie.title;
-        const idSerie = serie.mal_id;
-        seriesData.push({
+        const title = serie.title;
+        const id = serie.mal_id;
+
+        // Creo un nuevo array donde incluyo solo los datos que necesito para pintar las series
+        seriesToPaint.push({
           urlImage,
-          titleSerie,
-          idSerie,
+          title,
+          id,
         });
       }
-      console.log("seriesData es:", seriesData);
-      renderSeries(seriesData);
+      paintinCard(seriesToPaint);
       addFavoritesSeries();
     });
 };
 
-button.addEventListener("click", handleSearch);
+search.addEventListener("click", handleSearch);
+
+//  Ejercicio 3: almacenamiento local
+/*Cuando se recargue la página
+  - La lista de favoritos tiene que ser visible
+*/
 
 const checkLocalStorage = () => {
   const cache = JSON.parse(localStorage.getItem("favoriteSeries"));
-  console.log("cache es", cache);
 
   if (cache !== null) {
     favoritesSeries = cache;
-    renderSeriesFavorites(cache);
+    paintinCardFavorites(cache);
   }
 };
 checkLocalStorage();
