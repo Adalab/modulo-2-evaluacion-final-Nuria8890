@@ -43,6 +43,11 @@ const addFavoritesSeries = () => {
   }
 };
 
+const saveLocalStorage = (series) => {
+  console.log("para el localStorage, series es", series);
+  localStorage.setItem("favoriteSeries", JSON.stringify(series));
+};
+
 const handleFavorites = (event) => {
   // console.log("event.currentTarget", event.currentTarget);
   const serieClicked = event.currentTarget;
@@ -59,6 +64,7 @@ const handleFavorites = (event) => {
   console.log("favoritesSeries es", favoritesSeries);
 
   renderSeriesFavorites(favoritesSeries);
+  saveLocalStorage(favoritesSeries);
 };
 
 const handleSearch = () => {
@@ -101,3 +107,10 @@ const handleSearch = () => {
 };
 
 button.addEventListener("click", handleSearch);
+
+const checkLocalStorage = () => {
+  const cache = JSON.parse(localStorage.getItem("favoriteSeries"));
+  console.log("cache es", cache);
+  renderSeriesFavorites(cache);
+};
+checkLocalStorage();
