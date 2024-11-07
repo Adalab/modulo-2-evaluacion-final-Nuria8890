@@ -10,7 +10,7 @@ let favoritesSeries = [];
 const renderSeries = (series) => {
   for (const serie of series) {
     results.innerHTML += `
-        <li class="js-serie" id = ${serie.idSerie}>
+        <li class="js-serie" id=${serie.idSerie}>
             <img
               src=${serie.urlImage}
               alt=""
@@ -21,14 +21,18 @@ const renderSeries = (series) => {
   }
 };
 
-const renderSeriesFavorites = (favoritesSeries) => {
+const renderSeriesFavorites = (series) => {
   favorites.innerHTML = "";
-  for (const favoriteSeries of favoritesSeries) {
-    // event.CurrentTarget es un objeto, y dentro de él hay una propiedad (favoriteSeries.innerHTML) donde está el html que he pintado
+  for (const serie of series) {
     favorites.innerHTML += `
-    <li class="js-serie favorites__series">
-    ${favoriteSeries.innerHTML}
-    </li>`;
+        <li class="js-serie" id=${serie.idSerie}>
+            <img
+              src=${serie.urlImage}
+              alt=""
+            />
+            <p>${serie.titleSerie}</p>
+          </li>
+        `;
   }
 };
 
@@ -40,15 +44,23 @@ const addFavoritesSeries = () => {
 };
 
 const handleFavorites = (event) => {
-  console.log("event.currentTarget", event.currentTarget);
+  // console.log("event.currentTarget", event.currentTarget);
   const serieClicked = event.currentTarget;
+  const idSerieClicked = parseInt(event.currentTarget.id);
+  // console.log("typeof idSerieClicked", typeof idSerieClicked);
+  // console.log("idSerieClicked", idSerieClicked);
   serieClicked.classList.toggle("favorite__serie");
-  favoritesSeries.push(serieClicked);
+
+  const serieToAddFavorite = seriesData.find((serie) => {
+    // console.log("idSerie es", serie.idSerie);
+    return serie.idSerie === idSerieClicked;
+  });
+  favoritesSeries.push(serieToAddFavorite);
   console.log("favoritesSeries es", favoritesSeries);
+
   renderSeriesFavorites(favoritesSeries);
 };
 
-// 2. Búsqueda
 const handleSearch = () => {
   const inputValue = input.value;
 
@@ -57,7 +69,7 @@ const handleSearch = () => {
     .then((data) => {
       // console.log("data es", data);
       const series = data.data;
-      console.log("series es", series);
+      // console.log("series es", series);
 
       for (const serie of series) {
         /*Cuántas páginas hay
@@ -82,7 +94,7 @@ const handleSearch = () => {
           idSerie,
         });
       }
-      console.log(seriesData);
+      console.log("seriesData es:", seriesData);
       renderSeries(seriesData);
       addFavoritesSeries();
     });
