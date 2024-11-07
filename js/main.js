@@ -4,6 +4,18 @@ const button = document.querySelector(".js-button");
 const input = document.querySelector(".js-input");
 const results = document.querySelector(".js-results");
 
+const renderSeries = (image, title) => {
+  results.innerHTML += `
+        <li>
+            <img
+              src=${image}
+              alt=""
+            />
+            <p>${title}</p>
+          </li>
+        `;
+};
+
 const handleSearch = () => {
   const inputValue = input.value;
 
@@ -30,15 +42,7 @@ const handleSearch = () => {
 
         const titleSerie = serie.title;
 
-        results.innerHTML += `
-        <li>
-            <img
-              src=${urlImage}
-              alt=""
-            />
-            <p>${titleSerie}</p>
-          </li>
-        `;
+        renderSeries(urlImage, titleSerie);
       }
     });
 };
