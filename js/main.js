@@ -35,9 +35,10 @@ const paintinCard = (series) => {
     - añadir una clase que marque la serie
     - crear una variable de series favoritas
       - pintar esa variable en el listado de favoritos
+  - Si vuelvo a hacer click en una serie que ya se encuentra en el listado de favoritos, que no la vuelva a añadir a ese listado
 */
 const paintinCardFavorites = (series) => {
-  console.log("paintinCard series es", series);
+  console.log("paintinCardFavorites series es", series);
   favorites.innerHTML = "";
   for (const serie of series) {
     favorites.innerHTML += `
@@ -63,16 +64,30 @@ const handleFavorites = (event) => {
   const idSerieClicked = parseInt(event.currentTarget.id);
 
   serieClicked.classList.toggle("favorite__serie");
+  console.log("estoy en handeFavorites, idSerieClicked es", idSerieClicked);
+  console.log("estoy en handeFavorites, favoritesSeries es", favoritesSeries);
 
-  const serieToAddFavorite = seriesToPaint.find((serie) => {
-    return serie.id === idSerieClicked;
-  });
+  const idSerieInFavorite = favoritesSeries.findIndex(
+    (favoriteSerie) => favoriteSerie.id === idSerieClicked
+  );
+  console.log("idSerieInFavorite es", idSerieInFavorite);
+  if (idSerieInFavorite !== -1) {
+    console.log("entra por el if");
+    favoritesSeries.splice(idSerieInFavorite, 1);
+    paintinCardFavorites(favoritesSeries);
+    saveLocalStorage(favoritesSeries);
+  } else {
+    console.log("entra por el else");
+    const serieToAddFavorite = seriesToPaint.find((serie) => {
+      return serie.id === idSerieClicked;
+    });
 
-  favoritesSeries.push(serieToAddFavorite);
-  console.log("favoritesSeries es", favoritesSeries);
+    favoritesSeries.push(serieToAddFavorite);
+    console.log("favoritesSeries es", favoritesSeries);
 
-  paintinCardFavorites(favoritesSeries);
-  saveLocalStorage(favoritesSeries);
+    paintinCardFavorites(favoritesSeries);
+    saveLocalStorage(favoritesSeries);
+  }
 };
 
 const addFavoritesSeries = () => {
