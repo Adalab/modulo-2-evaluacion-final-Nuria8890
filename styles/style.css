@@ -1,0 +1,24 @@
+main {
+  margin: 20px;
+}
+
+.series {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+section {
+  background-color: lightcoral;
+  border: 2px solid black;
+  height: 500px;
+}
+.favorites {
+  width: 30%;
+  background-color: lightcoral;
+}
+
+.results {
+  width: 70%;
+  background-color: lightblue;
+}
