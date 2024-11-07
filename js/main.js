@@ -1,9 +1,9 @@
 const search = document.querySelector(".js-button");
 const input = document.querySelector(".js-input");
-let seriesToPaint = [];
 const results = document.querySelector(".js-results");
-let favoritesSeries = [];
 const favorites = document.querySelector(".js-favorites");
+let seriesToPaint = [];
+let favoritesSeries = [];
 
 // Ejercicio 1: Búsqueda
 /* Cuando hago click en el botón buscar
@@ -14,7 +14,6 @@ const favorites = document.querySelector(".js-favorites");
 */
 
 const paintinCard = (series) => {
-  console.log("paintinCard series es", series);
   for (const serie of series) {
     results.innerHTML += `
     <li class="js-serie" id=${serie.id}>
@@ -38,7 +37,6 @@ const paintinCard = (series) => {
   - Si vuelvo a hacer click en una serie que ya se encuentra en el listado de favoritos, que no la vuelva a añadir a ese listado
 */
 const paintinCardFavorites = (series) => {
-  console.log("paintinCardFavorites series es", series);
   favorites.innerHTML = "";
   for (const serie of series) {
     favorites.innerHTML += `
@@ -63,21 +61,19 @@ const handleFavorites = (event) => {
   const serieClicked = event.currentTarget;
   const idSerieClicked = parseInt(event.currentTarget.id);
 
-  serieClicked.classList.toggle("favorite__serie");
   console.log("estoy en handeFavorites, idSerieClicked es", idSerieClicked);
-  console.log("estoy en handeFavorites, favoritesSeries es", favoritesSeries);
 
   const idSerieInFavorite = favoritesSeries.findIndex(
     (favoriteSerie) => favoriteSerie.id === idSerieClicked
   );
   console.log("idSerieInFavorite es", idSerieInFavorite);
   if (idSerieInFavorite !== -1) {
-    console.log("entra por el if");
     favoritesSeries.splice(idSerieInFavorite, 1);
+    serieClicked.classList.remove("favorite__serie");
     paintinCardFavorites(favoritesSeries);
     saveLocalStorage(favoritesSeries);
   } else {
-    console.log("entra por el else");
+    serieClicked.classList.add("favorite__serie");
     const serieToAddFavorite = seriesToPaint.find((serie) => {
       return serie.id === idSerieClicked;
     });
