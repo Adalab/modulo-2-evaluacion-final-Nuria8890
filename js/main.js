@@ -111,6 +111,10 @@ button.addEventListener("click", handleSearch);
 const checkLocalStorage = () => {
   const cache = JSON.parse(localStorage.getItem("favoriteSeries"));
   console.log("cache es", cache);
-  renderSeriesFavorites(cache);
+
+  if (cache !== null) {
+    favoritesSeries = cache;
+    renderSeriesFavorites(cache);
+  }
 };
 checkLocalStorage();
