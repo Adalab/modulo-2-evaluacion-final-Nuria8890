@@ -29,3 +29,7 @@ ul {
 p {
   width: 220px;
 }
+
+.favorite__serie {
+  border: solid 5px red;
+}

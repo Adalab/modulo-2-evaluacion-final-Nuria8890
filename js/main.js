@@ -3,10 +3,12 @@
 const button = document.querySelector(".js-button");
 const input = document.querySelector(".js-input");
 const results = document.querySelector(".js-results");
+const favorites = document.querySelector(".js-favorites");
+let favoriteSeries = [];
 
 const renderSeries = (image, title) => {
   results.innerHTML += `
-        <li>
+        <li class="js-serie">
             <img
               src=${image}
               alt=""
@@ -14,6 +16,19 @@ const renderSeries = (image, title) => {
             <p>${title}</p>
           </li>
         `;
+};
+
+const addClassFavoriteSerie = () => {
+  const seriesSelected = document.querySelectorAll(".js-serie");
+  for (const serieSelected of seriesSelected) {
+    serieSelected.addEventListener("click", handleFavorites);
+  }
+};
+
+const handleFavorites = (event) => {
+  console.log("event.currentTarget", event.currentTarget);
+  const serieClicked = event.currentTarget;
+  serieClicked.classList.toggle("favorite__serie");
 };
 
 const handleSearch = () => {
@@ -43,6 +58,7 @@ const handleSearch = () => {
         const titleSerie = serie.title;
 
         renderSeries(urlImage, titleSerie);
+        addClassFavoriteSerie();
       }
     });
 };
