@@ -7,13 +7,16 @@ main {
   gap: 20px;
   margin-top: 20px;
 }
+.div__favorites {
+  width: 30%;
+  min-width: 220px;
+}
 
 .ul__favorites {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 10px;
-  width: 30%;
-  min-width: 220px;
   padding: 10px;
   background-color: lightcoral;
 }
@@ -29,12 +32,15 @@ main {
 .img__favorites {
   width: 158px;
 }
+.div__results {
+  width: 70%;
+  min-width: 480px;
+}
 .ul__results {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-evenly;
   gap: 10px;
-  width: 70%;
-  min-width: 480px;
   padding: 10px;
   background-color: lightblue;
 }
