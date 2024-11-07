@@ -17,8 +17,19 @@ ul {
   width: 100wh;
 }
 .favorites {
+  display: flex;
+  flex-direction: column;
   width: 30%;
   background-color: lightcoral;
+}
+
+.favorites__series {
+  width: 200px;
+  height: 300px;
+}
+
+img {
+  width: 80%;
 }
 
 .results {
