@@ -17,12 +17,12 @@ const paintinCard = (series) => {
   for (const serie of series) {
     results.innerHTML += `
     <li class="js-serie" id=${serie.id}>
-        <img class="img__results"
-          src=${serie.urlImage}
-          alt="${serie.title}"
-        />
-        <p>${serie.title}</p>
-      </li>
+      <img class="img__results"
+        src=${serie.urlImage}
+        alt="${serie.title}"
+      />
+      <p class="results__p">${serie.title}</p>
+    </li>
     `;
   }
 };
@@ -40,13 +40,13 @@ const paintinCardFavorites = (series) => {
   favorites.innerHTML = "";
   for (const serie of series) {
     favorites.innerHTML += `
-    <li class="js-serie" id=${serie.id}>
-        <img class="img__favorites"
-          src=${serie.urlImage}
-          alt="${serie.title}"
-        />
-        <p>${serie.title}</p>
-      </li>
+    <li class="li__favorites js-serie" id=${serie.id}>
+      <img class="img__favorites"
+        src=${serie.urlImage}
+        alt="${serie.title}"
+      />
+      <p class="favorites__p">${serie.title}</p>
+    </li>
     `;
   }
 };
