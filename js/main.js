@@ -1,5 +1,7 @@
-const search = document.querySelector(".js-button");
+const search = document.querySelector(".js-submit");
+const reset = document.querySelector(".js-reset");
 const input = document.querySelector(".js-input");
+const form = document.querySelector(".js-form");
 const results = document.querySelector(".js-results");
 const favorites = document.querySelector(".js-favorites");
 let seriesToPaint = [];
@@ -14,6 +16,8 @@ let favoritesSeries = [];
 */
 
 const paintinCard = (series) => {
+  results.innerHTML = "";
+
   for (const serie of series) {
     let thisSerieIsFavorite = "";
 
@@ -46,6 +50,7 @@ const paintinCard = (series) => {
       - pintar esa variable en el listado de favoritos
   - Si vuelvo a hacer click en una serie que ya se encuentra en el listado de favoritos, que no la vuelva a añadir a ese listado
 */
+
 const paintinCardFavorites = (series) => {
   favorites.innerHTML = "";
   for (const serie of series) {
@@ -62,6 +67,7 @@ const paintinCardFavorites = (series) => {
 };
 
 // Ejercicio 3: almacenamiento local
+
 const saveLocalStorage = (series) => {
   console.log("para el localStorage, series es", series);
   localStorage.setItem("favoriteSeries", JSON.stringify(series));
@@ -104,13 +110,16 @@ const addFavoritesSeries = () => {
 };
 
 // Ejercicio 1: Búsqueda
-const handleSearch = () => {
+
+const handleSearch = (event) => {
+  event.preventDefault();
   const inputValue = input.value;
 
   fetch(`https://api.jikan.moe/v4/anime?q=${inputValue}`)
     .then((response) => response.json())
     .then((data) => {
       const serverSeries = data.data;
+      seriesToPaint = [];
       for (const serie of serverSeries) {
         // Si no hay imagen en el listado, pinta la imagen de TV, sino, pinta la imagen que viene en el listado
         const urlImage =
@@ -150,3 +159,10 @@ const checkLocalStorage = () => {
   }
 };
 checkLocalStorage();
+
+const handleReset = () => {
+  results.innerHTML = "";
+  // form.reset();
+};
+
+reset.addEventListener("click", handleReset);
