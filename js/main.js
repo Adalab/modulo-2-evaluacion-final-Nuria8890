@@ -22,7 +22,8 @@ function paintinCardsFavorites(series) {
   for (const serie of series) {
     favorites.innerHTML += `
     <li class="favorites__li js-serie" id=${serie.id}>
-      <img class="favorites__img"
+    <div class="favorites__btnX js-btnX" id=${serie.id}>X</div>  
+    <img class="favorites__img"
         src=${serie.urlImage}
         alt="${serie.title}"
       />
@@ -30,6 +31,25 @@ function paintinCardsFavorites(series) {
     </li>
     `;
   }
+  const buttonsX = document.querySelectorAll(".js-btnX");
+  console.log(buttonsX);
+  for (const btn of buttonsX) {
+    btn.addEventListener("click", handleBtnX);
+  }
+}
+
+function handleBtnX(event) {
+  const idBtnFavoriteClicked = parseInt(event.currentTarget.id);
+
+  // Saco la posición en el array
+  const positionSerieInFavorite = favoritesSeries.findIndex(
+    (favoriteSerie) => favoriteSerie.id === idBtnFavoriteClicked
+  );
+
+  //  borra al hacer click
+  favoritesSeries.splice(positionSerieInFavorite, 1);
+  paintinCardsFavorites(favoritesSeries);
+  saveLocalStorage(favoritesSeries);
 }
 
 function handleSearch(event) {
@@ -105,14 +125,14 @@ function handleFavorites(event) {
   const idSerieClicked = parseInt(event.currentTarget.id);
 
   // Compruebo si la serie ha sido guardada previamente, y saco la posición en el array
-  const idSerieInFavorite = favoritesSeries.findIndex(
+  const positionSerieInFavorite = favoritesSeries.findIndex(
     (favoriteSerie) => favoriteSerie.id === idSerieClicked
   );
 
   // Si la serie está guardada como favorita, la borra al hacer click
-  if (idSerieInFavorite !== -1) {
+  if (positionSerieInFavorite !== -1) {
     // elimino la serie clickada del array
-    favoritesSeries.splice(idSerieInFavorite, 1);
+    favoritesSeries.splice(positionSerieInFavorite, 1);
 
     serieClicked.classList.remove("favorite__serie");
   } else {

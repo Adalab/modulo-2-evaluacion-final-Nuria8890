@@ -59,6 +59,13 @@ form {
   gap: 40px;
 }
 
+.favorites__btnX {
+  background-color: lightcoral;
+  color: black;
+  padding: 5px;
+  border-radius: 50%;
+}
+
 .favorites__li {
   display: flex;
   flex-direction: column;
