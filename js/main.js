@@ -109,7 +109,7 @@ function handleFavorites(event) {
 
   // Compruebo si la serie ha sido guardada previamente, y saco la posición en el array
   const idSerieInFavorite = favoritesSeries.findIndex(
-    (favoriteSerie) => favoriteSerie.id === idSerieClicked
+    (favoriteSerie) => favoriteSerie.id === idSerieClicked,
   );
 
   // Si la serie está guardada como favorita, la borra al hacer click
