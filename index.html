@@ -11,19 +11,21 @@
     <main>
       <h2>Buscador de series de anime</h2>
       <form action="">
-        <input type="text" name="search" id="search" class="js-input" />
-        <input type="submit" value="Buscar" class="js-submit" />
-        <input type="reset" value="Reset" class="js-reset" />
+        <input type="text" name="search" id="search" class="input js-input" />
+        <input type="submit" value="Buscar" class="btn js-submit" />
+        <input type="reset" value="Reset" class="btn js-reset" />
       </form>
-      <div class="series">
-        <div class="div__favorites">
-          <h4>Series Favoritas</h4>
-          <ul class="ul__favorites js-favorites"></ul>
-          <button class="js-deleteFavorites">Eliminar series favoritas</button>
+      <div class="series__container">
+        <div class="favorites__div">
+          <h4 class="favorites__title">Series Favoritas</h4>
+          <ul class="favorites__ul js-favorites"></ul>
+          <button class="btn js-deleteFavorites">
+            Eliminar series favoritas
+          </button>
         </div>
-        <div class="div__results">
-          <h4>Resultado de la búsqueda</h4>
-          <ul class="ul__results js-results"></ul>
+        <div class="results__div">
+          <h4 class="results__title">Resultado de la búsqueda</h4>
+          <ul class="results__ul js-results"></ul>
         </div>
       </div>
     </main>

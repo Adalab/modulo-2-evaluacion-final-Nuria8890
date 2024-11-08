@@ -4,18 +4,72 @@ const deleteFavorites = document.querySelector(".js-deleteFavorites");
 const input = document.querySelector(".js-input");
 const results = document.querySelector(".js-results");
 const favorites = document.querySelector(".js-favorites");
-let seriesToPaint = [];
+let searchedSeries = [];
 let favoritesSeries = [];
 
-// Ejercicio 1: Búsqueda
-/* Cuando hago click en el botón buscar
-    - Recoger el valor del input
-      - Hacer la solicitud al servidor con ese valor
-        - Por cada serie recogida, pintar una tarjeta con la imagen y el título
-          - Si no hay imagen, poner: "https://via.placeholder.com/100x100/f08080/add8e6/?text=NoImage"
-*/
+// 1º Chequea el localStorage para comprobar si existen series guardadas en caché y las pinta.
+function checkLocalStorage() {
+  const cache = JSON.parse(localStorage.getItem("favoriteSeries"));
 
-const paintinCard = (series) => {
+  if (cache !== null) {
+    favoritesSeries = cache;
+    paintinCardFavorites(cache);
+  }
+}
+checkLocalStorage();
+
+// Esta función se usa al cargar la página y cuando hago click en una serie que quiero que sea favorita
+function paintinCardFavorites(series) {
+  favorites.innerHTML = "";
+  for (const serie of series) {
+    favorites.innerHTML += `
+    <li class="favorites__li js-serie" id=${serie.id}>
+      <img class="favorites__img"
+        src=${serie.urlImage}
+        alt="${serie.title}"
+      />
+      <p class="favorites__p">${serie.title}</p>
+    </li>
+    `;
+  }
+}
+
+// 2º Al hacer click en buscar, descarga las series de la API y las pinta.
+search.addEventListener("click", handleSearch);
+
+function handleSearch(event) {
+  event.preventDefault();
+  const inputValue = input.value;
+
+  fetch(`https://api.jikan.moe/v4/anime?q=${inputValue}`)
+    .then((response) => response.json())
+    .then((data) => {
+      const serverSeries = data.data;
+      searchedSeries = [];
+      for (const serie of serverSeries) {
+        // Si no hay imagen en el listado, pinta una imagen por defecto, sino, pinta la imagen que viene en el listado.
+        const urlImage =
+          serie.images.jpg.image_url ===
+          "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png"
+            ? "https://via.placeholder.com/100x100/f08080/add8e6/?text=NoImage"
+            : serie.images.jpg.image_url;
+
+        const title = serie.title;
+        const id = serie.mal_id;
+
+        // Creo un nuevo array donde incluyo solo los datos que necesito para pintar las series
+        searchedSeries.push({
+          urlImage,
+          title,
+          id,
+        });
+      }
+      paintinCard(searchedSeries);
+      addEventListenerToAllSeriesPainted();
+    });
+}
+
+function paintinCard(series) {
   results.innerHTML = "";
 
   for (const serie of series) {
@@ -30,8 +84,8 @@ const paintinCard = (series) => {
     }
 
     results.innerHTML += `
-    <li class="js-serie ${thisSerieIsFavorite}" id=${serie.id}>
-      <img class="img__results"
+    <li class="results__li js-serie ${thisSerieIsFavorite}" id=${serie.id}>
+      <img class="results__img"
         src=${serie.urlImage}
         alt="${serie.title}"
       />
@@ -39,133 +93,65 @@ const paintinCard = (series) => {
     </li>
     `;
   }
-};
+}
 
-// Ejercicio 2: favoritos
-
-/*Cuando ya he pintado las series
-  - Al hacer click en cada serie
-    - añadir una clase que marque la serie
-    - crear una variable de series favoritas
-      - pintar esa variable en el listado de favoritos
-  - Si vuelvo a hacer click en una serie que ya se encuentra en el listado de favoritos, que no la vuelva a añadir a ese listado
-*/
-
-const paintinCardFavorites = (series) => {
-  favorites.innerHTML = "";
-  for (const serie of series) {
-    favorites.innerHTML += `
-    <li class="li__favorites js-serie" id=${serie.id}>
-      <img class="img__favorites"
-        src=${serie.urlImage}
-        alt="${serie.title}"
-      />
-      <p class="favorites__p">${serie.title}</p>
-    </li>
-    `;
-  }
-};
-
-// Ejercicio 3: almacenamiento local
-
-const saveLocalStorage = (series) => {
-  localStorage.setItem("favoriteSeries", JSON.stringify(series));
-};
-
-const handleFavorites = (event) => {
-  const serieClicked = event.currentTarget;
-  const idSerieClicked = parseInt(event.currentTarget.id);
-
-  const idSerieInFavorite = favoritesSeries.findIndex(
-    (favoriteSerie) => favoriteSerie.id === idSerieClicked
-  );
-
-  if (idSerieInFavorite !== -1) {
-    favoritesSeries.splice(idSerieInFavorite, 1);
-    serieClicked.classList.remove("favorite__serie");
-    paintinCardFavorites(favoritesSeries);
-    saveLocalStorage(favoritesSeries);
-  } else {
-    serieClicked.classList.add("favorite__serie");
-    const serieToAddFavorite = seriesToPaint.find((serie) => {
-      return serie.id === idSerieClicked;
-    });
-
-    favoritesSeries.push(serieToAddFavorite);
-
-    paintinCardFavorites(favoritesSeries);
-    saveLocalStorage(favoritesSeries);
-  }
-};
-
-const addFavoritesSeries = () => {
+// 3º Puedo seleccionar varias series como favoritas y guardarlas en caché
+function addEventListenerToAllSeriesPainted() {
   const seriesSelected = document.querySelectorAll(".js-serie");
   for (const serieSelected of seriesSelected) {
     serieSelected.addEventListener("click", handleFavorites);
   }
-};
+}
 
-// Ejercicio 1: Búsqueda
+function handleFavorites(event) {
+  const serieClicked = event.currentTarget;
+  const idSerieClicked = parseInt(event.currentTarget.id);
 
-const handleSearch = (event) => {
-  event.preventDefault();
-  const inputValue = input.value;
+  // Compruebo si la serie ha sido guardada previamente, y saco la posición en el array
+  const idSerieInFavorite = favoritesSeries.findIndex(
+    (favoriteSerie) => favoriteSerie.id === idSerieClicked
+  );
 
-  fetch(`https://api.jikan.moe/v4/anime?q=${inputValue}`)
-    .then((response) => response.json())
-    .then((data) => {
-      const serverSeries = data.data;
-      seriesToPaint = [];
-      for (const serie of serverSeries) {
-        // Si no hay imagen en el listado, pinta la imagen de TV, sino, pinta la imagen que viene en el listado
-        const urlImage =
-          serie.images.jpg.image_url ===
-          "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png"
-            ? "https://via.placeholder.com/100x100/f08080/add8e6/?text=NoImage"
-            : serie.images.jpg.image_url;
+  // Si la serie está guardada como favorita, la borra al hacer click
+  if (idSerieInFavorite !== -1) {
+    // elimino la serie clickada del array
+    favoritesSeries.splice(idSerieInFavorite, 1);
 
-        const title = serie.title;
-        const id = serie.mal_id;
+    serieClicked.classList.remove("favorite__serie");
+  } else {
+    // Si la serie NO está guardada como favorita, la guarda al hacer click
 
-        // Creo un nuevo array donde incluyo solo los datos que necesito para pintar las series
-        seriesToPaint.push({
-          urlImage,
-          title,
-          id,
-        });
-      }
-      paintinCard(seriesToPaint);
-      addFavoritesSeries();
+    // localizo la serie en el array que he conseguido de la API
+    const serieToAddFavorite = searchedSeries.find((serie) => {
+      return serie.id === idSerieClicked;
     });
-};
+    // añado la serie clickada al array
+    favoritesSeries.push(serieToAddFavorite);
 
-search.addEventListener("click", handleSearch);
-
-//  Ejercicio 3: almacenamiento local
-/*Cuando se recargue la página
-  - La lista de favoritos tiene que ser visible
-*/
-
-const checkLocalStorage = () => {
-  const cache = JSON.parse(localStorage.getItem("favoriteSeries"));
-
-  if (cache !== null) {
-    favoritesSeries = cache;
-    paintinCardFavorites(cache);
+    serieClicked.classList.add("favorite__serie");
   }
-};
-checkLocalStorage();
 
-const handleReset = () => {
-  results.innerHTML = "";
-};
+  paintinCardFavorites(favoritesSeries);
+  saveLocalStorage(favoritesSeries);
+}
 
+// Cuando clicko en una serie que quiero que sea favorita, la guardo en caché.
+function saveLocalStorage(series) {
+  localStorage.setItem("favoriteSeries", JSON.stringify(series));
+}
+
+// Cuando hago click en el botón de "reset", solo se borra la búsqueda
 reset.addEventListener("click", handleReset);
 
-const handleDeleteFavorites = () => {
+function handleReset() {
+  results.innerHTML = "";
+}
+
+// Cuando hago click en el botón "eliminar series favoritas", borro las series de la página, del caché y del array
+deleteFavorites.addEventListener("click", handleDeleteFavorites);
+
+function handleDeleteFavorites() {
   favorites.innerHTML = "";
   localStorage.removeItem("favoriteSeries");
   favoritesSeries = [];
-};
-
-deleteFavorites.addEventListener("click", handleDeleteFavorites);
+}
