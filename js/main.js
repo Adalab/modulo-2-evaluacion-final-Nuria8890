@@ -1,7 +1,7 @@
 const search = document.querySelector(".js-submit");
 const reset = document.querySelector(".js-reset");
+const deleteFavorites = document.querySelector(".js-deleteFavorites");
 const input = document.querySelector(".js-input");
-const form = document.querySelector(".js-form");
 const results = document.querySelector(".js-results");
 const favorites = document.querySelector(".js-favorites");
 let seriesToPaint = [];
@@ -162,7 +162,13 @@ checkLocalStorage();
 
 const handleReset = () => {
   results.innerHTML = "";
-  // form.reset();
 };
 
 reset.addEventListener("click", handleReset);
+
+const handleDeleteFavorites = () => {
+  favorites.innerHTML = "";
+  localStorage.setItem("favoriteSeries", []);
+};
+
+deleteFavorites.addEventListener("click", handleDeleteFavorites);
