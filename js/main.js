@@ -161,6 +161,7 @@ function saveLocalStorage(series) {
 
 function handleReset() {
   results.innerHTML = "";
+  searchedSeries = [];
 }
 
 function handleDeleteFavorites() {
