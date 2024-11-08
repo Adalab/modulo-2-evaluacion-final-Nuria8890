@@ -69,7 +69,6 @@ const paintinCardFavorites = (series) => {
 // Ejercicio 3: almacenamiento local
 
 const saveLocalStorage = (series) => {
-  console.log("para el localStorage, series es", series);
   localStorage.setItem("favoriteSeries", JSON.stringify(series));
 };
 
@@ -77,12 +76,10 @@ const handleFavorites = (event) => {
   const serieClicked = event.currentTarget;
   const idSerieClicked = parseInt(event.currentTarget.id);
 
-  console.log("estoy en handeFavorites, idSerieClicked es", idSerieClicked);
-
   const idSerieInFavorite = favoritesSeries.findIndex(
     (favoriteSerie) => favoriteSerie.id === idSerieClicked
   );
-  console.log("idSerieInFavorite es", idSerieInFavorite);
+
   if (idSerieInFavorite !== -1) {
     favoritesSeries.splice(idSerieInFavorite, 1);
     serieClicked.classList.remove("favorite__serie");
@@ -95,7 +92,6 @@ const handleFavorites = (event) => {
     });
 
     favoritesSeries.push(serieToAddFavorite);
-    console.log("favoritesSeries es", favoritesSeries);
 
     paintinCardFavorites(favoritesSeries);
     saveLocalStorage(favoritesSeries);
@@ -168,7 +164,8 @@ reset.addEventListener("click", handleReset);
 
 const handleDeleteFavorites = () => {
   favorites.innerHTML = "";
-  localStorage.setItem("favoriteSeries", []);
+  localStorage.removeItem("favoriteSeries");
+  favoritesSeries = [];
 };
 
 deleteFavorites.addEventListener("click", handleDeleteFavorites);
