@@ -2,7 +2,7 @@
 
 Aquí te presento una página web para localizar y guardar tus series de anime favoritas.
 
-Es la evaluación final del módulo 2 que he hecho en Adalab, después casi un mes aprendiendo JavaScript.
+Es la evaluación final del módulo 2 que he hecho en Adalab, después de casi un mes aprendiendo JavaScript.
 
 No estoy contenta con el resultado, tal vez porque soy un poco exigente conmigo misma, pero sé que puedo hacerlo mil veces mejor. No he tenido el día... En cuanto tenga un rato libre mejoraré el código y la página en sí.
 

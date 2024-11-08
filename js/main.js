@@ -1,4 +1,6 @@
-const search = document.querySelector(".js-button");
+const search = document.querySelector(".js-submit");
+const reset = document.querySelector(".js-reset");
+const deleteFavorites = document.querySelector(".js-deleteFavorites");
 const input = document.querySelector(".js-input");
 const results = document.querySelector(".js-results");
 const favorites = document.querySelector(".js-favorites");
@@ -14,15 +16,27 @@ let favoritesSeries = [];
 */
 
 const paintinCard = (series) => {
+  results.innerHTML = "";
+
   for (const serie of series) {
+    let thisSerieIsFavorite = "";
+
+    if (
+      favoritesSeries.find((serieFavorite) => {
+        return serie.id === serieFavorite.id;
+      }) !== undefined
+    ) {
+      thisSerieIsFavorite = "favorite__serie";
+    }
+
     results.innerHTML += `
-    <li class="js-serie" id=${serie.id}>
-        <img class="img__results"
-          src=${serie.urlImage}
-          alt="${serie.title}"
-        />
-        <p>${serie.title}</p>
-      </li>
+    <li class="js-serie ${thisSerieIsFavorite}" id=${serie.id}>
+      <img class="img__results"
+        src=${serie.urlImage}
+        alt="${serie.title}"
+      />
+      <p class="results__p">${serie.title}</p>
+    </li>
     `;
   }
 };
@@ -36,24 +50,25 @@ const paintinCard = (series) => {
       - pintar esa variable en el listado de favoritos
   - Si vuelvo a hacer click en una serie que ya se encuentra en el listado de favoritos, que no la vuelva a añadir a ese listado
 */
+
 const paintinCardFavorites = (series) => {
   favorites.innerHTML = "";
   for (const serie of series) {
     favorites.innerHTML += `
-    <li class="js-serie" id=${serie.id}>
-        <img class="img__favorites"
-          src=${serie.urlImage}
-          alt="${serie.title}"
-        />
-        <p>${serie.title}</p>
-      </li>
+    <li class="li__favorites js-serie" id=${serie.id}>
+      <img class="img__favorites"
+        src=${serie.urlImage}
+        alt="${serie.title}"
+      />
+      <p class="favorites__p">${serie.title}</p>
+    </li>
     `;
   }
 };
 
 // Ejercicio 3: almacenamiento local
+
 const saveLocalStorage = (series) => {
-  console.log("para el localStorage, series es", series);
   localStorage.setItem("favoriteSeries", JSON.stringify(series));
 };
 
@@ -61,12 +76,10 @@ const handleFavorites = (event) => {
   const serieClicked = event.currentTarget;
   const idSerieClicked = parseInt(event.currentTarget.id);
 
-  console.log("estoy en handeFavorites, idSerieClicked es", idSerieClicked);
-
   const idSerieInFavorite = favoritesSeries.findIndex(
     (favoriteSerie) => favoriteSerie.id === idSerieClicked
   );
-  console.log("idSerieInFavorite es", idSerieInFavorite);
+
   if (idSerieInFavorite !== -1) {
     favoritesSeries.splice(idSerieInFavorite, 1);
     serieClicked.classList.remove("favorite__serie");
@@ -79,7 +92,6 @@ const handleFavorites = (event) => {
     });
 
     favoritesSeries.push(serieToAddFavorite);
-    console.log("favoritesSeries es", favoritesSeries);
 
     paintinCardFavorites(favoritesSeries);
     saveLocalStorage(favoritesSeries);
@@ -94,13 +106,16 @@ const addFavoritesSeries = () => {
 };
 
 // Ejercicio 1: Búsqueda
-const handleSearch = () => {
+
+const handleSearch = (event) => {
+  event.preventDefault();
   const inputValue = input.value;
 
   fetch(`https://api.jikan.moe/v4/anime?q=${inputValue}`)
     .then((response) => response.json())
     .then((data) => {
       const serverSeries = data.data;
+      seriesToPaint = [];
       for (const serie of serverSeries) {
         // Si no hay imagen en el listado, pinta la imagen de TV, sino, pinta la imagen que viene en el listado
         const urlImage =
@@ -140,3 +155,17 @@ const checkLocalStorage = () => {
   }
 };
 checkLocalStorage();
+
+const handleReset = () => {
+  results.innerHTML = "";
+};
+
+reset.addEventListener("click", handleReset);
+
+const handleDeleteFavorites = () => {
+  favorites.innerHTML = "";
+  localStorage.removeItem("favoriteSeries");
+  favoritesSeries = [];
+};
+
+deleteFavorites.addEventListener("click", handleDeleteFavorites);
