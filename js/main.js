@@ -15,8 +15,18 @@ let favoritesSeries = [];
 
 const paintinCard = (series) => {
   for (const serie of series) {
+    let thisSerieIsFavorite = "";
+
+    if (
+      favoritesSeries.find((serieFavorite) => {
+        return serie.id === serieFavorite.id;
+      }) !== undefined
+    ) {
+      thisSerieIsFavorite = "favorite__serie";
+    }
+
     results.innerHTML += `
-    <li class="js-serie" id=${serie.id}>
+    <li class="js-serie ${thisSerieIsFavorite}" id=${serie.id}>
       <img class="img__results"
         src=${serie.urlImage}
         alt="${serie.title}"
