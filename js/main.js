@@ -46,10 +46,12 @@ function handleBtnX(event) {
     (favoriteSerie) => favoriteSerie.id === idBtnFavoriteClicked
   );
 
-  //  borra al hacer click
+  // borra al hacer click
   favoritesSeries.splice(positionSerieInFavorite, 1);
+
   paintinCardsFavorites(favoritesSeries);
   saveLocalStorage(favoritesSeries);
+  paintinCardsInResults(searchedSeries);
 }
 
 function handleSearch(event) {
