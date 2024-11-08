@@ -7,19 +7,17 @@ const favorites = document.querySelector(".js-favorites");
 let searchedSeries = [];
 let favoritesSeries = [];
 
-// 1º Chequea el localStorage para comprobar si existen series guardadas en caché y las pinta.
 function checkLocalStorage() {
   const cache = JSON.parse(localStorage.getItem("favoriteSeries"));
 
   if (cache !== null) {
     favoritesSeries = cache;
-    paintinCardFavorites(cache);
+    paintinCardsFavorites(cache);
   }
 }
-checkLocalStorage();
 
 // Esta función se usa al cargar la página y cuando hago click en una serie que quiero que sea favorita
-function paintinCardFavorites(series) {
+function paintinCardsFavorites(series) {
   favorites.innerHTML = "";
   for (const serie of series) {
     favorites.innerHTML += `
@@ -34,9 +32,6 @@ function paintinCardFavorites(series) {
   }
 }
 
-// 2º Al hacer click en buscar, descarga las series de la API y las pinta.
-search.addEventListener("click", handleSearch);
-
 function handleSearch(event) {
   event.preventDefault();
   const inputValue = input.value;
@@ -45,7 +40,9 @@ function handleSearch(event) {
     .then((response) => response.json())
     .then((data) => {
       const serverSeries = data.data;
+      // Le digo que el array de series buscadas está vacío porque cuando busco dos veces sin recargar la página, se duplica la búsqueda
       searchedSeries = [];
+
       for (const serie of serverSeries) {
         // Si no hay imagen en el listado, pinta una imagen por defecto, sino, pinta la imagen que viene en el listado.
         const urlImage =
@@ -64,12 +61,11 @@ function handleSearch(event) {
           id,
         });
       }
-      paintinCard(searchedSeries);
-      addEventListenerToAllSeriesPainted();
+      paintinCardsInResults(searchedSeries);
     });
 }
 
-function paintinCard(series) {
+function paintinCardsInResults(series) {
   results.innerHTML = "";
 
   for (const serie of series) {
@@ -93,9 +89,10 @@ function paintinCard(series) {
     </li>
     `;
   }
+  addEventListenerToAllSeriesPainted();
 }
 
-// 3º Puedo seleccionar varias series como favoritas y guardarlas en caché
+// Puedo seleccionar varias series como favoritas y guardarlas en caché
 function addEventListenerToAllSeriesPainted() {
   const seriesSelected = document.querySelectorAll(".js-serie");
   for (const serieSelected of seriesSelected) {
@@ -109,7 +106,7 @@ function handleFavorites(event) {
 
   // Compruebo si la serie ha sido guardada previamente, y saco la posición en el array
   const idSerieInFavorite = favoritesSeries.findIndex(
-    (favoriteSerie) => favoriteSerie.id === idSerieClicked,
+    (favoriteSerie) => favoriteSerie.id === idSerieClicked
   );
 
   // Si la serie está guardada como favorita, la borra al hacer click
@@ -131,27 +128,34 @@ function handleFavorites(event) {
     serieClicked.classList.add("favorite__serie");
   }
 
-  paintinCardFavorites(favoritesSeries);
+  paintinCardsFavorites(favoritesSeries);
   saveLocalStorage(favoritesSeries);
 }
 
-// Cuando clicko en una serie que quiero que sea favorita, la guardo en caché.
+// Cuando hago click en una serie que quiero que sea favorita, la guardo en caché.
 function saveLocalStorage(series) {
   localStorage.setItem("favoriteSeries", JSON.stringify(series));
 }
-
-// Cuando hago click en el botón de "reset", solo se borra la búsqueda
-reset.addEventListener("click", handleReset);
 
 function handleReset() {
   results.innerHTML = "";
 }
 
-// Cuando hago click en el botón "eliminar series favoritas", borro las series de la página, del caché y del array
-deleteFavorites.addEventListener("click", handleDeleteFavorites);
-
 function handleDeleteFavorites() {
   favorites.innerHTML = "";
   localStorage.removeItem("favoriteSeries");
   favoritesSeries = [];
+  paintinCardsInResults(searchedSeries);
 }
+
+// Chequea el localStorage para comprobar si existen series guardadas en caché y las pinta.
+checkLocalStorage();
+
+// Cuando hago click en el botón "buscar", descarga las series de la API y las pinta.
+search.addEventListener("click", handleSearch);
+
+// Cuando hago click en el botón "reset", solo se borra la búsqueda
+reset.addEventListener("click", handleReset);
+
+// Cuando hago click en el botón "eliminar series favoritas", borro las series de la página, del caché y del array
+deleteFavorites.addEventListener("click", handleDeleteFavorites);
